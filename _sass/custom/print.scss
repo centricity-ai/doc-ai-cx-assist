@@ -1,0 +1,524 @@
+// ============================================
+// Print Styles for PDF Export
+// Optimized for Documentation PDF Generation
+// ============================================
+
+@media print {
+  // ============================================
+  // Page Setup
+  // ============================================
+  @page {
+    size: A4;
+    margin: 2cm 1.5cm;
+
+    @top-center {
+      content: "AI Chatbot Support Service - Technical Documentation";
+      font-size: 9pt;
+      color: #666;
+    }
+
+    @bottom-right {
+      content: "Page " counter(page) " of " counter(pages);
+      font-size: 9pt;
+      color: #666;
+    }
+  }
+
+  // ============================================
+  // Reset & Global Styles
+  // ============================================
+  * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+
+  // ============================================
+  // Hide Non-Essential Elements
+  // ============================================
+  .side-bar,
+  .site-footer,
+  .search,
+  .aux-nav,
+  .breadcrumb-nav,
+  nav,
+  .back-to-top,
+  .copy-code-button,
+  .gh-edit-link,
+  button,
+  .btn:not(.keep-in-print) {
+    display: none !important;
+  }
+
+  // ============================================
+  // Main Content Optimization
+  // ============================================
+  .main-content {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .main-content-wrap {
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  // ============================================
+  // Typography for Print
+  // ============================================
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+    font-weight: bold;
+    margin-top: 16pt;
+    margin-bottom: 8pt;
+  }
+
+  h1 {
+    font-size: 24pt;
+    border-bottom: 2pt solid black;
+    padding-bottom: 6pt;
+    margin-top: 0;
+  }
+
+  h2 {
+    font-size: 18pt;
+    border-bottom: 1pt solid #ccc;
+    padding-bottom: 4pt;
+  }
+
+  h3 {
+    font-size: 14pt;
+  }
+
+  h4 {
+    font-size: 12pt;
+  }
+
+  h5,
+  h6 {
+    font-size: 11pt;
+  }
+
+  p {
+    orphans: 3;
+    widows: 3;
+    margin: 8pt 0;
+  }
+
+  // ============================================
+  // Links
+  // ============================================
+  a {
+    text-decoration: underline;
+    color: black !important;
+
+    &[href^="http"]:after {
+      content: " (" attr(href) ")";
+      font-size: 8pt;
+      color: #666 !important;
+    }
+
+    // Don't show URLs for anchor links
+    &[href^="#"]:after {
+      content: "";
+    }
+  }
+
+  // ============================================
+  // Code Blocks
+  // ============================================
+  code {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 9pt;
+    padding: 2pt 4pt;
+    border: 1pt solid #ccc;
+    border-radius: 3pt;
+    background: #f5f5f5 !important;
+  }
+
+  pre {
+    page-break-inside: avoid;
+    border: 1pt solid #ccc;
+    padding: 10pt;
+    margin: 8pt 0;
+    overflow-x: auto;
+    background: #f5f5f5 !important;
+    border-radius: 4pt;
+
+    code {
+      border: none;
+      padding: 0;
+      background: transparent !important;
+      font-size: 8pt;
+      line-height: 1.4;
+    }
+  }
+
+  .highlight {
+    page-break-inside: avoid;
+    background: #f5f5f5 !important;
+  }
+
+  // ============================================
+  // Tables
+  // ============================================
+  table {
+    page-break-inside: avoid;
+    border-collapse: collapse;
+    width: 100%;
+    margin: 12pt 0;
+    border: 1pt solid black;
+    font-size: 9pt;
+
+    thead {
+      display: table-header-group;
+      background: #e0e0e0 !important;
+
+      th {
+        border: 1pt solid black;
+        padding: 6pt;
+        font-weight: bold;
+        text-align: left;
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom: 1pt solid #ccc;
+
+        &:nth-child(even) {
+          background: #f9f9f9 !important;
+        }
+
+        &:hover {
+          background: transparent !important;
+        }
+      }
+
+      td {
+        border: 1pt solid #ccc;
+        padding: 6pt;
+      }
+    }
+  }
+
+  // ============================================
+  // Mermaid Diagrams
+  // ============================================
+  .mermaid {
+    page-break-inside: avoid;
+    border: 1pt solid #ccc;
+    padding: 12pt;
+    margin: 12pt 0;
+    background: white !important;
+
+    svg {
+      max-width: 100%;
+      height: auto;
+      background: white !important;
+
+      * {
+        background: white !important;
+      }
+
+      // Ensure diagram elements are visible
+      .node rect,
+      .node circle,
+      .node ellipse,
+      .node polygon {
+        fill: white !important;
+        stroke: black !important;
+        stroke-width: 1.5px;
+      }
+
+      .node text,
+      .edgeLabel text,
+      text {
+        fill: black !important;
+        stroke: none !important;
+      }
+
+      .edgePath .path {
+        stroke: black !important;
+        stroke-width: 1.5px;
+      }
+
+      .marker {
+        fill: black !important;
+      }
+
+      .cluster rect {
+        fill: #f0f0f0 !important;
+        stroke: black !important;
+      }
+    }
+  }
+
+  // ============================================
+  // HTTP Method Badges
+  // ============================================
+  .http-method {
+    display: inline-block;
+    padding: 2pt 6pt;
+    border: 1pt solid black;
+    border-radius: 3pt;
+    font-weight: bold;
+    font-size: 8pt;
+    margin-right: 6pt;
+    background: #e0e0e0 !important;
+
+    &.get:before {
+      content: "GET ";
+    }
+
+    &.post:before {
+      content: "POST ";
+    }
+
+    &.put:before {
+      content: "PUT ";
+    }
+
+    &.patch:before {
+      content: "PATCH ";
+    }
+
+    &.delete:before {
+      content: "DELETE ";
+    }
+  }
+
+  // ============================================
+  // API Endpoints
+  // ============================================
+  .api-endpoint {
+    page-break-inside: avoid;
+    border: 1pt solid #ccc;
+    padding: 10pt;
+    margin: 10pt 0;
+    background: #f9f9f9 !important;
+
+    .endpoint-path {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 9pt;
+      padding: 6pt;
+      border-left: 3pt solid black;
+      margin: 6pt 0;
+      background: #f0f0f0 !important;
+    }
+  }
+
+  // ============================================
+  // Callouts
+  // ============================================
+  .note,
+  .warning,
+  .important,
+  .tip,
+  .highlight {
+    page-break-inside: avoid;
+    padding: 10pt;
+    margin: 10pt 0;
+    border-left: 4pt solid black;
+    background: #f5f5f5 !important;
+
+    &:before {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 6pt;
+    }
+  }
+
+  .note:before {
+    content: "NOTE: ";
+  }
+
+  .warning:before {
+    content: "WARNING: ";
+  }
+
+  .important:before {
+    content: "IMPORTANT: ";
+  }
+
+  .tip:before {
+    content: "TIP: ";
+  }
+
+  .highlight:before {
+    content: "HIGHLIGHT: ";
+  }
+
+  // ============================================
+  // Lists
+  // ============================================
+  ul,
+  ol {
+    margin: 8pt 0;
+    padding-left: 20pt;
+
+    li {
+      margin: 4pt 0;
+      orphans: 3;
+      widows: 3;
+    }
+  }
+
+  // ============================================
+  // Blockquotes
+  // ============================================
+  blockquote {
+    page-break-inside: avoid;
+    margin: 10pt 0;
+    padding: 8pt 12pt;
+    border-left: 4pt solid #ccc;
+    background: #f9f9f9 !important;
+    font-style: italic;
+  }
+
+  // ============================================
+  // Images & Figures
+  // ============================================
+  img {
+    max-width: 100%;
+    height: auto;
+    page-break-inside: avoid;
+    border: 1pt solid #ccc;
+    padding: 4pt;
+  }
+
+  figure {
+    page-break-inside: avoid;
+    margin: 12pt 0;
+
+    figcaption {
+      font-size: 9pt;
+      text-align: center;
+      margin-top: 6pt;
+      font-style: italic;
+    }
+  }
+
+  // ============================================
+  // Horizontal Rules
+  // ============================================
+  hr {
+    border: none;
+    border-top: 1pt solid #ccc;
+    margin: 16pt 0;
+  }
+
+  // ============================================
+  // Hero Section (Cover Page)
+  // ============================================
+  .hero {
+    page-break-after: always;
+    text-align: center;
+    padding: 40pt 20pt;
+    border: 2pt solid black;
+    margin-bottom: 20pt;
+    background: #f0f0f0 !important;
+
+    h1 {
+      font-size: 28pt;
+      margin-bottom: 12pt;
+      border-bottom: none;
+    }
+
+    p {
+      font-size: 14pt;
+      margin: 12pt 0;
+    }
+  }
+
+  // ============================================
+  // Table of Contents
+  // ============================================
+  #table-of-contents,
+  .table-of-contents {
+    page-break-after: always;
+    margin-bottom: 20pt;
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+
+      li {
+        margin: 6pt 0;
+
+        a:after {
+          content: leader('.') target-counter(attr(href), page);
+        }
+      }
+
+      ul {
+        padding-left: 15pt;
+      }
+    }
+  }
+
+  // ============================================
+  // Badges
+  // ============================================
+  .badge {
+    display: inline-block;
+    padding: 2pt 6pt;
+    border: 1pt solid black;
+    border-radius: 3pt;
+    font-size: 8pt;
+    font-weight: bold;
+    margin: 0 3pt;
+    background: #e0e0e0 !important;
+  }
+
+  // ============================================
+  // Section Breaks
+  // ============================================
+  .page-break {
+    page-break-after: always;
+  }
+
+  .avoid-break {
+    page-break-inside: avoid;
+  }
+
+  // ============================================
+  // Footer Content
+  // ============================================
+  .site-footer {
+    display: block !important;
+    border-top: 1pt solid #ccc;
+    padding-top: 10pt;
+    margin-top: 20pt;
+    font-size: 9pt;
+    text-align: center;
+    color: #666 !important;
+  }
+
+  // ============================================
+  // Optimize for Black & White Printing
+  // ============================================
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color-adjust: exact;
+  }
+}
