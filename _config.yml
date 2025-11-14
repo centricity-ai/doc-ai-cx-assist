@@ -19,8 +19,8 @@ repository: centricity-ai/doc-ai-cx-assist
 # ============================================
 remote_theme: just-the-docs/just-the-docs@v0.8.0
 
-# Color scheme
-color_scheme: dark
+# Color scheme - light theme for tech-focused documentation
+color_scheme: light
 
 # Logo
 logo: "/assets/images/logo.png"

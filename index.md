@@ -4252,14 +4252,24 @@ For support, email support@chatbot-service.com or open an issue on GitHub.
 <script>
 mermaid.initialize({
   startOnLoad: true,
-  theme: 'dark',
+  theme: 'default',
   themeVariables: {
-    primaryColor: '#21262d',
-    primaryTextColor: '#c9d1d9',
-    primaryBorderColor: '#58a6ff',
-    lineColor: '#58a6ff',
-    secondaryColor: '#161b22',
-    tertiaryColor: '#0d1117'
+    primaryColor: '#ffffff',
+    primaryTextColor: '#24292f',
+    primaryBorderColor: '#0969da',
+    lineColor: '#0969da',
+    secondaryColor: '#f6f8fa',
+    tertiaryColor: '#ffffff',
+    background: '#fafbfc',
+    mainBkg: '#ffffff',
+    secondBkg: '#f6f8fa',
+    lineColor: '#0969da',
+    border1: '#d0d7de',
+    border2: '#d0d7de',
+    note: '#ddf4ff',
+    noteBkgColor: '#ddf4ff',
+    noteBorderColor: '#0969da',
+    noteTextColor: '#24292f'
   }
 });
 </script>
