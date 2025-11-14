@@ -1,0 +1,41 @@
+# Dockerfile for Celery Workers
+FROM python:3.11-slim
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN groupadd -r celery && useradd -r -g celery celery
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements
+COPY requirements/base.txt requirements/production.txt ./requirements/
+
+# Install Python dependencies
+RUN pip install --upgrade pip && \
+    pip install -r requirements/production.txt
+
+# Copy application code
+COPY --chown=celery:celery . .
+
+# Create necessary directories
+RUN mkdir -p /app/logs /app/media && \
+    chown -R celery:celery /app
+
+# Switch to non-root user
+USER celery
+
+# Default command (can be overridden)
+CMD ["celery", "-A", "core", "worker", "--loglevel=info", "--concurrency=4"]

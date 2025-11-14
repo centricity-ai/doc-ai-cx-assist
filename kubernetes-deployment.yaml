@@ -1,0 +1,391 @@
+# Kubernetes Deployment for AI Chatbot Service
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: chatbot-service
+  labels:
+    name: chatbot-service
+    environment: production
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: chatbot-config
+  namespace: chatbot-service
+data:
+  DJANGO_SETTINGS_MODULE: "core.settings.production"
+  LOG_LEVEL: "INFO"
+  CHUNK_SIZE: "512"
+  MAX_HISTORY_LENGTH: "10"
+  RETRIEVAL_TOP_K: "5"
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: chatbot-secrets
+  namespace: chatbot-service
+type: Opaque
+stringData:
+  SECRET_KEY: "your-django-secret-key"
+  MONGODB_URI: "mongodb://username:password@mongodb-service:27017/chatbot"
+  REDIS_PASSWORD: "your-redis-password"
+  PINECONE_API_KEY: "your-pinecone-api-key"
+  AZURE_OPENAI_KEY: "your-azure-openai-key"
+  AZURE_OPENAI_ENDPOINT: "https://your-resource.openai.azure.com/"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chatbot-api
+  namespace: chatbot-service
+  labels:
+    app: chatbot-api
+    version: v1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: chatbot-api
+  template:
+    metadata:
+      labels:
+        app: chatbot-api
+        version: v1
+    spec:
+      containers:
+      - name: chatbot-api
+        image: your-registry.azurecr.io/chatbot-api:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: http
+        - containerPort: 9090
+          name: metrics
+        env:
+        - name: DJANGO_SETTINGS_MODULE
+          valueFrom:
+            configMapKeyRef:
+              name: chatbot-config
+              key: DJANGO_SETTINGS_MODULE
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: chatbot-secrets
+              key: SECRET_KEY
+        - name: MONGODB_URI
+          valueFrom:
+            secretKeyRef:
+              name: chatbot-secrets
+              key: MONGODB_URI
+        - name: REDIS_URL
+          value: "redis://:$(REDIS_PASSWORD)@redis-service:6379/0"
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: chatbot-secrets
+              key: REDIS_PASSWORD
+        - name: PINECONE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: chatbot-secrets
+              key: PINECONE_API_KEY
+        - name: AZURE_OPENAI_KEY
+          valueFrom:
+            secretKeyRef:
+              name: chatbot-secrets
+              key: AZURE_OPENAI_KEY
+        - name: AZURE_OPENAI_ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              name: chatbot-secrets
+              key: AZURE_OPENAI_ENDPOINT
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "2000m"
+        livenessProbe:
+          httpGet:
+            path: /health/
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health/ready/
+            port: 8000
+          initialDelaySeconds: 20
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: logs
+          mountPath: /app/logs
+        - name: media
+          mountPath: /app/media
+      volumes:
+      - name: logs
+        emptyDir: {}
+      - name: media
+        persistentVolumeClaim:
+          claimName: chatbot-media-pvc
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: celery-worker
+  namespace: chatbot-service
+  labels:
+    app: celery-worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: celery-worker
+  template:
+    metadata:
+      labels:
+        app: celery-worker
+    spec:
+      containers:
+      - name: celery-worker
+        image: your-registry.azurecr.io/chatbot-celery:latest
+        imagePullPolicy: Always
+        command: ["celery", "-A", "core", "worker", "--loglevel=info", "--concurrency=4"]
+        env:
+        - name: DJANGO_SETTINGS_MODULE
+          valueFrom:
+            configMapKeyRef:
+              name: chatbot-config
+              key: DJANGO_SETTINGS_MODULE
+        - name: MONGODB_URI
+          valueFrom:
+            secretKeyRef:
+              name: chatbot-secrets
+              key: MONGODB_URI
+        - name: REDIS_URL
+          value: "redis://:$(REDIS_PASSWORD)@redis-service:6379/0"
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: chatbot-secrets
+              key: REDIS_PASSWORD
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+        volumeMounts:
+        - name: logs
+          mountPath: /app/logs
+      volumes:
+      - name: logs
+        emptyDir: {}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: celery-beat
+  namespace: chatbot-service
+  labels:
+    app: celery-beat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: celery-beat
+  template:
+    metadata:
+      labels:
+        app: celery-beat
+    spec:
+      containers:
+      - name: celery-beat
+        image: your-registry.azurecr.io/chatbot-celery:latest
+        imagePullPolicy: Always
+        command: ["celery", "-A", "core", "beat", "--loglevel=info"]
+        env:
+        - name: DJANGO_SETTINGS_MODULE
+          valueFrom:
+            configMapKeyRef:
+              name: chatbot-config
+              key: DJANGO_SETTINGS_MODULE
+        - name: MONGODB_URI
+          valueFrom:
+            secretKeyRef:
+              name: chatbot-secrets
+              key: MONGODB_URI
+        - name: REDIS_URL
+          value: "redis://:$(REDIS_PASSWORD)@redis-service:6379/0"
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: chatbot-secrets
+              key: REDIS_PASSWORD
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chatbot-api-service
+  namespace: chatbot-service
+  labels:
+    app: chatbot-api
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  - port: 9090
+    targetPort: 9090
+    protocol: TCP
+    name: metrics
+  selector:
+    app: chatbot-api
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+  namespace: chatbot-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    app: redis
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-service
+  namespace: chatbot-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 27017
+    targetPort: 27017
+  selector:
+    app: mongodb
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: chatbot-ingress
+  namespace: chatbot-service
+  annotations:
+    kubernetes.io/ingress.class: azure/application-gateway
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+spec:
+  tls:
+  - hosts:
+    - api.chatbot-service.com
+    secretName: chatbot-tls
+  rules:
+  - host: api.chatbot-service.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: chatbot-api-service
+            port:
+              number: 80
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: chatbot-media-pvc
+  namespace: chatbot-service
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: azure-file
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: chatbot-api-hpa
+  namespace: chatbot-service
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: chatbot-api
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 30
+      - type: Pods
+        value: 2
+        periodSeconds: 30
+      selectPolicy: Max
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: chatbot-api-pdb
+  namespace: chatbot-service
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: chatbot-api

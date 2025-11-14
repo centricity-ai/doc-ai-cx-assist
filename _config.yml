@@ -1,0 +1,25 @@
+theme: jekyll-theme-cayman
+title: AI Chatbot Support Service
+description: Enterprise-Grade Customer Support AI Platform
+permalink: pretty
+markdown: kramdown
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: default
+url: http://localhost:4000
+baseurl: ""
+exclude:
+  - README.md
+  - CONTRIBUTING.md
+  - PACKAGE_SUMMARY.md
+  - QUICKSTART.md
+  - vendor
+  - Gemfile
+  - Gemfile.lock
+  - .bundle

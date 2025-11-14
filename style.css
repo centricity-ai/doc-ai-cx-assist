@@ -1,0 +1,280 @@
+/* Enhanced styling for AI Chatbot Documentation */
+
+:root {
+  --content-max-width: 1000px;
+  --primary-color: #0366d6;
+  --code-bg: #f6f8fa;
+  --border-color: #e1e4e8;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --error-color: #dc3545;
+}
+
+/* Layout and Typography */
+body {
+  line-height: 1.7;
+  font-size: 16px;
+  color: #24292e;
+}
+
+.page-content,
+.wrapper,
+main {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  margin-top: 32px;
+  margin-bottom: 16px;
+  line-height: 1.25;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 8px;
+}
+
+h1 {
+  font-size: 2.5em;
+  border-bottom: 2px solid var(--primary-color);
+}
+
+h2 {
+  font-size: 2em;
+  border-bottom: 2px solid var(--border-color);
+}
+
+h3 {
+  font-size: 1.5em;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Code blocks */
+code {
+  background-color: var(--code-bg);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.9em;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+pre {
+  background-color: var(--code-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 16px;
+  overflow-x: auto;
+  line-height: 1.45;
+  margin: 16px 0;
+}
+
+pre code {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+  font-size: 0.85em;
+}
+
+/* Mermaid diagrams */
+.mermaid {
+  width: 100%;
+  overflow: auto;
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  display: block;
+  overflow-x: auto;
+}
+
+th, td {
+  border: 1px solid var(--border-color);
+  padding: 12px;
+  text-align: left;
+}
+
+th {
+  background-color: var(--code-bg);
+  font-weight: 600;
+}
+
+tr:nth-child(even) {
+  background-color: #fafbfc;
+}
+
+/* Links */
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Lists */
+ul, ol {
+  padding-left: 2em;
+  margin: 16px 0;
+}
+
+li {
+  margin: 8px 0;
+}
+
+/* Blockquotes */
+blockquote {
+  border-left: 4px solid var(--primary-color);
+  padding-left: 16px;
+  margin: 16px 0;
+  color: #6a737d;
+  font-style: italic;
+}
+
+/* Badges and labels */
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 0.85em;
+  font-weight: 600;
+  border-radius: 3px;
+  margin: 0 4px;
+}
+
+.badge-success {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.badge-warning {
+  background-color: var(--warning-color);
+  color: #212529;
+}
+
+.badge-error {
+  background-color: var(--error-color);
+  color: white;
+}
+
+/* HTTP method badges */
+code[class*="http-"] {
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-weight: 600;
+  color: white;
+}
+
+/* Navigation */
+#markdown-toc {
+  background-color: var(--code-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 16px;
+  margin: 20px 0;
+}
+
+#markdown-toc a {
+  color: #24292e;
+}
+
+#markdown-toc li {
+  margin: 6px 0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+  
+  h1 {
+    font-size: 2em;
+  }
+  
+  h2 {
+    font-size: 1.75em;
+  }
+  
+  h3 {
+    font-size: 1.4em;
+  }
+  
+  .page-content,
+  .wrapper,
+  main {
+    padding: 0 16px;
+  }
+  
+  pre {
+    padding: 12px;
+  }
+  
+  table {
+    font-size: 0.9em;
+  }
+}
+
+/* Print styles */
+@media print {
+  .mermaid {
+    page-break-inside: avoid;
+  }
+  
+  pre {
+    page-break-inside: avoid;
+    border: 1px solid #000;
+  }
+  
+  table {
+    page-break-inside: avoid;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+}
+
+/* Syntax highlighting for JSON/YAML */
+.language-json .hljs-attr,
+.language-yaml .hljs-attr {
+  color: #005cc5;
+}
+
+.language-json .hljs-string,
+.language-yaml .hljs-string {
+  color: #032f62;
+}
+
+.language-json .hljs-number,
+.language-yaml .hljs-number {
+  color: #005cc5;
+}
+
+.language-json .hljs-literal,
+.language-yaml .hljs-literal {
+  color: #005cc5;
+}
+
+/* HTTP syntax highlighting */
+.language-http .hljs-keyword {
+  color: #d73a49;
+  font-weight: 600;
+}
+
+.language-http .hljs-string {
+  color: #032f62;
+}
+
+.language-http .hljs-number {
+  color: #005cc5;
+}
