@@ -1,10 +1,9 @@
 # ============================================
 # Site Configuration
 # ============================================
-title: AI Chatbot Support Service
-description: Enterprise-Grade Customer Support AI Platform with RAG, Multi-LLM Support & Semantic Search
-author: bluntjoint — Rishabh A.
-email: contact@centricity-ai.com
+title: AI Customer Support Agent
+description: Technical Architecture & Implementation Guide
+author: Rishabh A.
 
 # URL Configuration
 url: "https://centricity-ai.github.io"
@@ -15,61 +14,33 @@ permalink: pretty
 repository: centricity-ai/doc-ai-cx-assist
 
 # ============================================
-# Just the Docs Theme Configuration
+# Theme Configuration
 # ============================================
 remote_theme: just-the-docs/just-the-docs@v0.8.0
-
-# Color scheme - light theme for tech-focused documentation
 color_scheme: light
-
-# Logo
-logo: "/assets/images/logo.png"
 
 # Search
 search_enabled: true
 search:
   heading_level: 2
-  previews: 3
-  preview_words_before: 5
-  preview_words_after: 10
+  previews: 2
   tokenizer_separator: /[\s/]+/
-  rel_url: true
-  button: false
-
-# Heading anchor links
-heading_anchors: true
-
-# Aux links for the upper right navigation
-aux_links:
-  "GitHub Repository":
-    - "https://github.com/centricity-ai/doc-ai-cx-assist"
-  "Download PDF":
-    - "https://centricity-ai.github.io/doc-ai-cx-assist/assets/downloads/documentation.pdf"
-
-# Makes Aux links open in a new tab
-aux_links_new_tab: true
 
 # Navigation
+heading_anchors: true
 nav_enabled: true
-nav_sort: case_insensitive
+back_to_top: false
 
-# Back to top link
-back_to_top: true
-back_to_top_text: "Back to top"
+# Aux links
+aux_links:
+  "GitHub":
+    - "https://github.com/centricity-ai/doc-ai-cx-assist"
+aux_links_new_tab: true
 
 # Footer
-footer_content: "Copyright &copy; 2025 Centricity AI. Technical Documentation maintained by <strong>bluntjoint — Rishabh A.</strong> | <a href='https://github.com/centricity-ai/doc-ai-cx-assist'>View on GitHub</a>"
-
-# Footer last modified
-last_edit_timestamp: true
-last_edit_time_format: "%b %e %Y at %I:%M %p"
-
-gh_edit_link: true
-gh_edit_link_text: "Edit this page on GitHub"
-gh_edit_repository: "https://github.com/centricity-ai/doc-ai-cx-assist"
-gh_edit_branch: "main"
-gh_edit_source: ""
-gh_edit_view_mode: "edit"
+footer_content: "Technical Documentation | Centricity AI | 2025"
+last_edit_timestamp: false
+gh_edit_link: false
 
 # ============================================
 # Code Features
