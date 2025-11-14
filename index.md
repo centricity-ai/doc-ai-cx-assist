@@ -1165,4 +1165,72 @@ mermaid.initialize({
   theme: 'default',
   securityLevel: 'loose'
 });
+
+// Click-to-enlarge functionality for Mermaid diagrams
+document.addEventListener('DOMContentLoaded', function() {
+  // Create modal container
+  const modal = document.createElement('div');
+  modal.className = 'mermaid-modal';
+  modal.innerHTML = `
+    <span class="close-button">&times;</span>
+    <div class="mermaid-content"></div>
+  `;
+  document.body.appendChild(modal);
+
+  const modalContent = modal.querySelector('.mermaid-content');
+  const closeButton = modal.querySelector('.close-button');
+
+  // Add click handlers to all mermaid diagrams
+  function addClickHandlers() {
+    const diagrams = document.querySelectorAll('.mermaid');
+    diagrams.forEach(diagram => {
+      // Skip if already has handler
+      if (diagram.dataset.clickHandlerAdded) return;
+
+      diagram.style.cursor = 'zoom-in';
+      diagram.addEventListener('click', function(e) {
+        // Clone the diagram
+        const clone = this.cloneNode(true);
+        clone.style.cursor = 'default';
+        modalContent.innerHTML = '';
+        modalContent.appendChild(clone);
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+
+      diagram.dataset.clickHandlerAdded = 'true';
+    });
+  }
+
+  // Close modal handlers
+  closeButton.addEventListener('click', function() {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  });
+
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+
+  // Initialize click handlers after diagrams are rendered
+  setTimeout(addClickHandlers, 1000);
+
+  // Also check periodically in case diagrams render late
+  const checkInterval = setInterval(function() {
+    if (document.querySelectorAll('.mermaid svg').length > 0) {
+      addClickHandlers();
+      clearInterval(checkInterval);
+    }
+  }, 500);
+});
 </script>
